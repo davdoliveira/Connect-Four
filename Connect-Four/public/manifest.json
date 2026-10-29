@@ -1,0 +1,15 @@
+{
+  "short_name": "4 em Linha",
+  "name": "Jogo 4 em Linha",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#ff4d4d",
+  "background_color": "#ffffff"
+}

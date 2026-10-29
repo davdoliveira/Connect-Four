@@ -1,0 +1,120 @@
+.drop-zone {
+    height: calc(var(--size) * 1.5);
+    position: relative;
+}
+
+/* Posição de uma célula: --col e --row são definidos em linha pelo React. */
+.drop-zone .coin,
+.drop-zone .special-cell,
+.drop-zone .win-mark {
+    --tx: calc(var(--col) * var(--size));
+    --ty: calc((var(--row) + 1.5) * var(--size));
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    transform: translate(var(--tx), var(--ty));
+}
+
+/* ---------- peças ---------- */
+
+.drop-zone .coin.p1 { background-color: var(--p1); }
+.drop-zone .coin.p2 { background-color: var(--p2); }
+
+/* A peça cai a partir do topo, acelera, bate no fundo e salta um bocadinho. */
+.drop-zone .coin:not(.active) {
+    animation: coin-drop var(--dur, 0.6s) both;
+}
+
+@keyframes coin-drop {
+    0% {
+        transform: translate(var(--tx), 0);
+        animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6);
+    }
+    72% {
+        transform: translate(var(--tx), var(--ty));
+        animation-timing-function: ease-out;
+    }
+    84% {
+        transform: translate(var(--tx), calc(var(--ty) - var(--size) * 0.1));
+        animation-timing-function: ease-in;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty));
+    }
+}
+
+/* A peça que o jogador move antes de a largar fica por cima da zona de queda. */
+.drop-zone .coin.active {
+    --ty: 0px;
+    transition: transform 200ms ease-in-out;
+}
+
+/* ---------- células especiais e linha vencedora ---------- */
+
+.drop-zone .special-cell {
+    border: 6px solid rgb(255, 0, 0);
+    background: transparent;
+    box-sizing: border-box;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.drop-zone .win-mark {
+    border: 6px solid #fff;
+    box-shadow: 0 0 14px 4px rgba(255, 255, 255, 0.9);
+    background: transparent;
+    box-sizing: border-box;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+    animation: win-pulse 0.7s ease-in-out 0.9s infinite alternate;
+}
+
+@keyframes win-pulse {
+    from { opacity: 0.35; }
+    to   { opacity: 1; }
+}
+
+/* ---------- clique/rato nas colunas ---------- */
+
+.drop-zone .column-hits {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--size) * 7);
+    height: calc(var(--size) * 7.5);
+    display: grid;
+    grid-template-columns: repeat(7, var(--size));
+    z-index: 3;
+}
+
+.drop-zone .column-hits.disabled {
+    pointer-events: none;
+}
+
+.drop-zone .column-hit {
+    cursor: pointer;
+}
+
+/* ---------- mensagem final ---------- */
+
+.drop-zone p {
+    display: grid;
+    place-content: center;
+    height: 100%;
+    margin: 0;
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: bold;
+    font-size: clamp(1.1rem, 4vw, 2rem);
+    color: #e70101;
+    animation: fade-in 0.4s ease 0.8s both;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+}
